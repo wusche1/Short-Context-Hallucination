@@ -1,0 +1,24 @@
+# Virtual environment directories
+.venv/
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+
+# Python cache files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Exclude the file bash_script.txt
+bash_script.txt
+
+# macOS specific files
+.DS_Store
+#keys
+
+keys
+
+# Windows specific files
+Thumbs.db

@@ -6,12 +6,13 @@ import numpy as np
 import pandas as pd
 import torch as t
 import os
+import json
+
 
 from openai import OpenAI
 
 # %%
-
-api_key = os.getenv("OPENAI_API_KEY")
+api_key = json.load(open('../keys'))['OPENAI_API_KEY']
 client = OpenAI(api_key=api_key)
 
 
