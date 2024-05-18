@@ -32,7 +32,7 @@
         ]
     },
     {
-        "text": "I'm just a computer program, so I don't have feelings or emotions, but I'm here and ready to assist you with any questions or concerns you may have. How can I help you today?",
+        "text": "I'm just a computer program, so I don't have feelings in the same way humans do. But I'm here to help you with anything you need! How can I assist you today?",
         "role": "assistant",
         "tokenization": null,
         "kv_cache": null,
