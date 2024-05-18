@@ -3,11 +3,6 @@ import json
 from typing import List, Optional, Dict, Any
 import sys
 import os
-
-sys.path.append(os.path.join(os.path.dirname(__file__), "."))
-# read out the ls of the added path
-print(os.path.join(os.path.dirname(__file__), "."))
-print(os.listdir(os.path.join(os.path.dirname(__file__), ".")))
 from gpt_lib import generate_answer
 from llama_lib import (
     get_llama_response,

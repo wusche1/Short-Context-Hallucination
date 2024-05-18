@@ -126,6 +126,46 @@ def get_llama_response(
     return text, answer_tokens, kv
 
 
+def get_llama_response_uncached(
+    messages: List,
+    model,
+    attended_messages: Optional[List[int]] = None,
+    role="assistant",
+) -> None:
+    add_tokens_to_conversation(messages)
+    tokens_input = []
+    if attended_messages is None:
+        attended_messages = list(range(len(messages)))
+    for i in attended_messages:
+        message = messages[i]
+        tokens_input.append(message.tokenization)
+
+    n_previous_tokens = sum([message.tokenization.shape[1] for message in messages])
+
+    message_start_tokens = tokenizer.encode(
+        f"<|start_header_id|>{role}<|end_header_id|>\n\n", return_tensors="pt"
+    ).to(device)
+    tokens_input.append(message_start_tokens)
+    tokens_input = t.cat(tokens_input, dim=-1)
+
+    response = model.generate(
+        tokens_input,
+        max_length=len(tokens_input) + 1000,
+        return_dict_in_generate=True,
+        attention_mask=t.ones(tokens_input.shape).to(device),
+    )
+
+    answer_tokens = response.sequences[:, n_previous_tokens:]
+    kv = CacheUtil.snip_first_n_pos_of_cache(
+        response.past_key_values, n_previous_tokens
+    )
+
+    text = answer_tokens[:, len(message_start_tokens[0]) : -1]
+    text = tokenizer.decode(text[0])
+
+    return text, answer_tokens, kv
+
+
 # %%
 if __name__ == "__main__":
     model = AutoModelForCausalLM.from_pretrained("meta-llama/Meta-Llama-3-8B-Instruct")
@@ -133,13 +173,14 @@ if __name__ == "__main__":
 
 # %%
 if __name__ == "__main__":
-    from conversation_lib import Message
+    from conversation_lib import Message, Conversations
 
-    messages = [
-        Message("Hello!", "user", 0, "human "),
-        Message("Hi there!", "assistant", 1, "human "),
-        Message("What is the capital of Berlin?", "user", 2, "human "),
-    ]
+    conv = Conversations()
+    conv.add_message("Hello!", "user")
+    conv.add_message("Hi there!", "assistant")
+    conv.add_message("How are you?", "user")
+
+    messages = conv.messages
 
     add_tokens_to_conversation(messages)
     add_kv_cache_to_conversation(messages, model)
@@ -151,4 +192,23 @@ if __name__ == "__main__":
     print("kv:")
     print(kv[0][0].shape)
 
+# %%
+if __name__ == "__main__":
+    from conversation_lib import Message, Conversations
+
+    conv = Conversations()
+    conv.add_message("Hello!", "user")
+    conv.add_message("Hi there!", "assistant")
+    conv.add_message("How are you?", "user")
+
+    messages = conv.messages
+
+    add_tokens_to_conversation(messages)
+    text, resonse, kv = get_llama_response_uncached(messages, model)
+    print("text:")
+    print(text)
+    print("resonse:")
+    print(tokenizer.decode(resonse[0]))
+    print("kv:")
+    print(kv[0][0].shape)
 # %%
