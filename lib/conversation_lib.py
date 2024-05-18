@@ -9,6 +9,11 @@ sys.path.append(os.path.join(os.path.dirname(__file__), "."))
 print(os.path.join(os.path.dirname(__file__), "."))
 print(os.listdir(os.path.join(os.path.dirname(__file__), ".")))
 from gpt_lib import generate_answer
+from llama_lib import (
+    get_llama_response,
+    add_tokens_to_conversation,
+    add_kv_cache_to_conversation,
+)
 
 
 # %%
@@ -93,7 +98,7 @@ class Conversations:
             else:
                 print(f"{message.role}: {message.text}")
 
-    def gpt_message_format(self, attend_list) -> List[Dict[str, str]]:
+    def message_format(self, attend_list) -> List[Dict[str, str]]:
         attended_messages = []
 
         for position in attend_list:
@@ -106,7 +111,7 @@ class Conversations:
     ) -> str:
         if attend_list is None:
             attend_list = list(range(len(self.messages)))
-        attended_messages = self.gpt_message_format(attend_list)
+        attended_messages = self.message_format(attend_list)
         assistant_response = generate_answer(attended_messages, model)
         message = Message(
             assistant_response,
@@ -117,6 +122,25 @@ class Conversations:
         )
         self.messages.append(message)
         return
+
+    def generate_llama_response(
+        self, model, attend_list: Optional[List[int]] = None, role="assistant"
+    ) -> None:
+        if attend_list is None:
+            attend_list = list(range(len(self.messages)))
+        add_tokens_to_conversation(self.messages)
+        add_kv_cache_to_conversation(self.messages, model)
+        attended_messages = self.message_format(attend_list)
+        text, answer_tokens, kv = get_llama_response(attended_messages, model, role)
+        message = Message(
+            text,
+            role,
+            len(self.messages),
+            model.config.name_or_path,
+            tokenization=answer_tokens,
+            kv_cache=kv,
+            attend_list=attend_list,
+        )
 
 
 # %%

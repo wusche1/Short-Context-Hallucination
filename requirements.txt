@@ -2,3 +2,5 @@ openai
 numpy
 pandas
 torch
+transformers
+accelerate
