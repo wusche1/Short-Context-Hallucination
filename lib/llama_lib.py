@@ -125,6 +125,8 @@ def get_llama_response(
 
     text = answer_tokens[:, i_message_begins:-1]
     text = tokenizer.decode(text[0])
+    print("text generated:")
+    print(text)
 
     return text, answer_tokens, kv
 
@@ -183,21 +185,6 @@ if __name__ == "__main__":
     from conversation_lib import Message, Conversations
 
     conv = Conversations()
-    conv.add_message("Hello!", "user")
-    conv.add_message("Hi there!", "assistant")
-    conv.add_message("How are you?", "user")
-
-    messages = conv.messages
-
-    add_tokens_to_conversation(messages)
-    add_kv_cache_to_conversation(messages, model)
-    text, resonse, kv = get_llama_response(messages, model)
-    print("text:")
-    print(text)
-    print("resonse:")
-    print(tokenizer.decode(resonse[0]))
-    print("kv:")
-    print(kv[0][0].shape)
 
 # %%
 if __name__ == "__main__":
@@ -217,4 +204,8 @@ if __name__ == "__main__":
     conv.generate_llama_response(model)
     # conv.print_conversation()
 
+# %%
+if __name__ == "__main__":
+    for message in conv.messages:
+        print(message.text)
 # %%

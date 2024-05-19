@@ -1,4 +1,7 @@
 # %%
+from dotenv import load_dotenv
+
+load_dotenv()
 import json
 from typing import List, Optional, Dict, Any
 import sys
@@ -51,4 +54,9 @@ conv.print_conversation()
 conv.add_message("""Now make a list of all neighbouring countries of Canada""", "user")
 conv.generate_llama_response(model)
 conv.print_conversation()
+# %%
+
+
+for message in conv.messages:
+    print(message.text)
 # %%

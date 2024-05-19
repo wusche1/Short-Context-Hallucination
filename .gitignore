@@ -1,6 +1,7 @@
 # Virtual environment directories
 .venv/
 .env/
+.env
 venv/
 env/
 ENV/
