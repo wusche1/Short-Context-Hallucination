@@ -185,12 +185,18 @@ class Conversations:
                 self.add_message_to_cache(message)
         return
 
-    def generate_llama_response(self, role="assistant", attend_list=None):
+    def generate_llama_response(
+        self, role="assistant", attend_list=None, max_length=500, use_cache=True
+    ):
         if attend_list is None:
             attend_list = list(range(len(self.messages) + 1))
-        attention_mask = self.get_attention_mask(self.message_number_mask, attend_list)
         self.cache_all_messages()
         message_start_tokens = self.llama_beginning_of_text_tokens(role)
+        message_start_attention_mask = t.ones_like(message_start_tokens).unsqueeze(0)
+        attention_mask = self.get_attention_mask(self.message_number_mask, attend_list)
+        attention_mask = self.conditional_tensor_concat(
+            attention_mask, message_start_attention_mask
+        )
         tokens_input = t.cat(
             [self.tokenization, message_start_tokens], dim=-1
         ).unsqueeze(
@@ -199,13 +205,29 @@ class Conversations:
 
         i_response_start = tokens_input.shape[1]
 
-        response = self.model.generate(
-            tokens_input,
-            past_key_values=self.cache,
-            return_dict_in_generate=True,
-            attention_mask=attention_mask,
-            max_length=len(tokens_input) + 100,
-        )
+        if use_cache:
+            # print all shapes
+            # print(f"message_start_tokens shape: {message_start_tokens.shape}")
+            # print(f"tokens_input shape: {tokens_input.shape}")
+            # if self.cache is not None:
+            #    print(f"past_key_values shape: {self.cache[0][0].shape}")
+            # if attention_mask is not None:
+            #    print(f"attention_mask shape: {attention_mask.shape}")
+
+            response = self.model.generate(
+                tokens_input,
+                past_key_values=self.cache,
+                return_dict_in_generate=True,
+                attention_mask=attention_mask,
+                max_length=i_response_start + max_length,
+            )
+        else:
+            response = self.model.generate(
+                tokens_input,
+                return_dict_in_generate=True,
+                attention_mask=attention_mask,
+                max_length=i_response_start + max_length,
+            )
         response_text = self.tokenizer.decode(
             response.sequences[0, i_response_start:-1], skip_special_tokens=True
         )
@@ -265,63 +287,24 @@ if __name__ == "__main__":
 # %%
 if __name__ == "__main__":
     conv = Conversations(model, tokenizer)
-    conv.add_message("Hello!", "user")
-    conv.add_message("Hi there!", "assistant")
-    conv.add_message("How are you?", "user")
-    conv.cache_all_messages()
-
-    tokens = conv.tokenization
-    new_message_beginning = conv.llama_beginning_of_text_tokens("assistant")
-    tokens = t.cat([tokens, new_message_beginning], dim=-1).unsqueeze(0)
-
-    i_new_message_begins = tokens.shape[1]
-
-    generation = model.generate(
-        tokens,
-        return_dict_in_generate=True,
-        max_length=len(tokens) + 100,
-    )
-
-    answer_tokens = generation.sequences[:, i_new_message_begins:]
-# %%
-if __name__ == "__main__":
-    print(tokens.shape)
-    print(generation.sequences.shape)
-    print(answer_tokens.shape)
-    print("####################")
-    print(
-        tokenizer.decode(
-            generation.sequences[0, :i_new_message_begins], skip_special_tokens=False
-        )
-    )
-    print("####################")
-    print(
-        tokenizer.decode(
-            generation.sequences[0, i_new_message_begins:], skip_special_tokens=False
-        )
-    )
-    print("####################")
+    conv.add_message("You are a harmless helpfull and honest assistant", "system")
+    conv.add_message("Who is the King of Spain?", "user")
+    conv.generate_llama_response()
+    conv.add_message("Who is the President of Germany?", "user")
+    conv.generate_llama_response()
+    conv.add_message("Who is the Queen of England?", "user")
+    conv.generate_llama_response()
+    conv.add_message("Who is the Pope?", "user")
+    conv.generate_llama_response()
+    conv.add_message("Who is the President of the United States?", "user")
+    conv.generate_llama_response()
+    conv.add_message("Who is the President of France?", "user")
+    conv.generate_llama_response()
+    conv.add_message("Who is the President of Russia?", "user")
+    conv.generate_llama_response()
+    conv.add_message("Who is the President of China?", "user")
+    conv.generate_llama_response()
+    conv.print_conversation()
 
 
-# %%
-
-# %%
-if __name__ == "__main__":
-    conv = Conversations(model, tokenizer)
-    conv.add_message("Hello!", "user")
-    conv.add_message("Hi there!", "assistant")
-    conv.add_message("How are you?", "user")
-    conv.cache_all_messages()
-
-    tokens = conv.tokenization
-    cache = conv.cache
-
-    print(tokenizer.decode(tokens[:], skip_special_tokens=False))
-
-    repica_cache = model(tokens.unsqueeze(0), return_dict=True).past_key_values
-
-    for a, b in zip(cache, repica_cache):
-        for c, d in zip(a, b):
-            # see wether they are close
-            print(t.allclose(c, d, atol=1e-4))
 # %%
