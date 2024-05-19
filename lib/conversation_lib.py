@@ -4,11 +4,7 @@ from typing import List, Optional, Dict, Any
 import sys
 import os
 from gpt_lib import generate_answer
-from llama_lib import (
-    get_llama_response,
-    add_tokens_to_conversation,
-    add_kv_cache_to_conversation,
-)
+from llama_lib import get_llama_response, get_llama_response_uncached
 
 
 # %%
@@ -124,6 +120,25 @@ class Conversations:
         if attend_list is None:
             attend_list = list(range(len(self.messages)))
         text, answer_tokens, kv = get_llama_response(
+            self.messages, model, attend_list, role
+        )
+        message = Message(
+            text,
+            role,
+            len(self.messages),
+            model.config.name_or_path,
+            tokenization=answer_tokens,
+            kv_cache=kv,
+            attend_list=attend_list,
+        )
+        self.messages.append(message)
+
+    def get_llama_response_uncached(
+        self, model, attend_list: Optional[List[int]] = None, role="assistant"
+    ) -> None:
+        if attend_list is None:
+            attend_list = list(range(len(self.messages)))
+        text, answer_tokens, kv = get_llama_response_uncached(
             self.messages, model, attend_list, role
         )
         message = Message(

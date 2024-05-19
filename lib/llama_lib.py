@@ -58,7 +58,7 @@ def add_tokens_to_conversation(messages: List[dict]) -> None:
             if message.number == 0:
                 message_text = f"<|begin_of_text|>{message_text}"
             message.tokenization = tokenizer.encode(
-                message_text, return_tensors="pt"
+                message_text, return_tensors="pt", add_special_tokens=False
             ).to(device)
     return
 
@@ -100,10 +100,13 @@ def get_llama_response(
         tokens_input.append(message.tokenization)
         kv_input.append(message.kv_cache)
     message_start_tokens = tokenizer.encode(
-        f"<|start_header_id|>{role}<|end_header_id|>\n\n", return_tensors="pt"
+        f"<|start_header_id|>{role}<|end_header_id|>\n\n",
+        return_tensors="pt",
+        add_special_tokens=False,
     ).to(device)
     tokens_input.append(message_start_tokens)
     tokens_input = t.cat(tokens_input, dim=-1)
+    i_message_begins = tokens_input.shape[1]
     kv_input = CacheUtil.add_caches_along_seq_pos(kv_input)
     n_previous_tokens = kv_input[0][0].shape[2]
 
@@ -120,7 +123,7 @@ def get_llama_response(
         response.past_key_values, n_previous_tokens
     )
 
-    text = answer_tokens[:, len(message_start_tokens[0]) : -1]
+    text = answer_tokens[:, i_message_begins:-1]
     text = tokenizer.decode(text[0])
 
     return text, answer_tokens, kv
@@ -143,10 +146,14 @@ def get_llama_response_uncached(
     n_previous_tokens = sum([message.tokenization.shape[1] for message in messages])
 
     message_start_tokens = tokenizer.encode(
-        f"<|start_header_id|>{role}<|end_header_id|>\n\n", return_tensors="pt"
+        f"<|start_header_id|>{role}<|end_header_id|>\n\n",
+        return_tensors="pt",
+        add_special_tokens=False,
     ).to(device)
     tokens_input.append(message_start_tokens)
     tokens_input = t.cat(tokens_input, dim=-1)
+
+    i_message_begins = tokens_input.shape[1]
 
     response = model.generate(
         tokens_input,
@@ -160,7 +167,7 @@ def get_llama_response_uncached(
         response.past_key_values, n_previous_tokens
     )
 
-    text = answer_tokens[:, len(message_start_tokens[0]) : -1]
+    text = answer_tokens[:, i_message_begins:-1]
     text = tokenizer.decode(text[0])
 
     return text, answer_tokens, kv
@@ -197,18 +204,17 @@ if __name__ == "__main__":
     from conversation_lib import Message, Conversations
 
     conv = Conversations()
-    conv.add_message("Hello!", "user")
-    conv.add_message("Hi there!", "assistant")
-    conv.add_message("How are you?", "user")
+    conv.add_message("What is the capital of France?", "user")
+    conv.generate_llama_response(model)
+    conv.add_message("What is the capital of Germany?", "user")
+    conv.generate_llama_response(model)
+    # conv.print_conversation()
+    conv.add_message("What is the capital of Spain?", "user")
+    conv.generate_llama_response(model)
+    conv.add_message("What is the capital of Italy?", "user")
+    conv.generate_llama_response(model)
+    conv.add_message("What is the capital of Portugal?", "user")
+    conv.generate_llama_response(model)
+    # conv.print_conversation()
 
-    messages = conv.messages
-
-    add_tokens_to_conversation(messages)
-    text, resonse, kv = get_llama_response_uncached(messages, model)
-    print("text:")
-    print(text)
-    print("resonse:")
-    print(tokenizer.decode(resonse[0]))
-    print("kv:")
-    print(kv[0][0].shape)
 # %%
