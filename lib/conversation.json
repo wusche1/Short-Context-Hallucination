@@ -2,46 +2,42 @@
     {
         "text": "Hello!",
         "role": "user",
-        "tokenization": null,
-        "kv_cache": null,
         "number": 0,
         "origin": "human",
-        "attend_list": []
+        "attend_list": [],
+        "cached": false
     },
     {
         "text": "Hi there!",
         "role": "assistant",
-        "tokenization": null,
-        "kv_cache": null,
         "number": 1,
         "origin": "human",
         "attend_list": [
             0
-        ]
+        ],
+        "cached": false
     },
     {
         "text": "How are you?",
         "role": "user",
-        "tokenization": null,
-        "kv_cache": null,
         "number": 2,
         "origin": "human",
         "attend_list": [
             0,
             1
-        ]
+        ],
+        "cached": false
     },
     {
-        "text": "I'm just a computer program, so I don't have feelings in the same way humans do. But I'm here to help you with anything you need! How can I assist you today?",
+        "text": "I'm just a computer program, so I don't have feelings, but I'm here and ready to assist you with any questions or tasks you have. How can I help you today?",
         "role": "assistant",
-        "tokenization": null,
-        "kv_cache": null,
         "number": 3,
         "origin": "gpt-3.5-turbo",
         "attend_list": [
             0,
             1,
             2
-        ]
+        ],
+        "cached": false
     }
 ]
