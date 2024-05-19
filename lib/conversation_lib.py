@@ -44,40 +44,46 @@ class Conversations:
         self.messages.append(message)
 
     def save_conversation(self, file_path: str):
+        base_dir = os.path.dirname(file_path)
+        os.makedirs(base_dir, exist_ok=True)
+
         with open(file_path, "w") as file:
             json.dump(self.messages, file, indent=4)
-            t.save(
-                self.tokenization,
-                os.path.join(os.path.dirname(file_path), "tokenization.pt"),
-            )
-            t.save(self.cache, os.path.join(os.path.dirname(file_path), "cache.pt"))
-            t.save(
-                self.message_number_mask,
-                os.path.join(os.path.dirname(file_path), "message_number_mask.pt"),
-            )
-            if self.model_name is not None:
-                with open(
-                    os.path.join(os.path.dirname(file_path), "model_name.txt"), "w"
-                ) as model_file:
-                    model_file.write(self.model_name)
+
+        t.save(self.tokenization, os.path.join(base_dir, "tokenization.pt"))
+        t.save(self.cache, os.path.join(base_dir, "cache.pt"))
+        t.save(
+            self.message_number_mask, os.path.join(base_dir, "message_number_mask.pt")
+        )
+
+        if self.model_name is not None:
+            with open(os.path.join(base_dir, "model_name.txt"), "w") as model_file:
+                model_file.write(self.model_name)
 
     def load_conversation(self, file_path: str):
+        base_dir = os.path.dirname(file_path)
+
         with open(file_path, "r") as file:
             self.messages = json.load(file)
-            self.tokenization = t.load(
-                os.path.join(os.path.dirname(file_path), "tokenization.pt")
-            )
-            self.cache = t.load(os.path.join(os.path.dirname(file_path), "cache.pt"))
+
+        tokenization_path = os.path.join(base_dir, "tokenization.pt")
+        if os.path.exists(tokenization_path):
+            self.tokenization = t.load(tokenization_path, map_location=device)
+
+        cache_path = os.path.join(base_dir, "cache.pt")
+        if os.path.exists(cache_path):
+            self.cache = t.load(cache_path, map_location=device)
+
+        message_number_mask_path = os.path.join(base_dir, "message_number_mask.pt")
+        if os.path.exists(message_number_mask_path):
             self.message_number_mask = t.load(
-                os.path.join(os.path.dirname(file_path), "message_number_mask.pt")
+                message_number_mask_path, map_location=device
             )
-            if os.path.exists(
-                os.path.join(os.path.dirname(file_path), "model_name.txt")
-            ):
-                with open(
-                    os.path.join(os.path.dirname(file_path), "model_name.txt"), "r"
-                ) as model_file:
-                    self.model_name = model_file.read()
+
+        model_name_path = os.path.join(base_dir, "model_name.txt")
+        if os.path.exists(model_name_path):
+            with open(model_name_path, "r") as model_file:
+                self.model_name = model_file.read()
 
     def print_conversation(self, verbose: bool = False):
         for message in self.messages:
@@ -220,6 +226,7 @@ class Conversations:
                 return_dict_in_generate=True,
                 attention_mask=attention_mask,
                 max_length=i_response_start + max_length,
+                pad_token_id=self.tokenizer.eos_token_id,
             )
         else:
             response = self.model.generate(
@@ -227,6 +234,7 @@ class Conversations:
                 return_dict_in_generate=True,
                 attention_mask=attention_mask,
                 max_length=i_response_start + max_length,
+                pad_token_id=self.tokenizer.eos_token_id,
             )
         response_text = self.tokenizer.decode(
             response.sequences[0, i_response_start:-1], skip_special_tokens=True
@@ -286,6 +294,7 @@ if __name__ == "__main__":
 
 # %%
 if __name__ == "__main__":
+    tokenizer.pad_token = tokenizer.eos_token
     conv = Conversations(model, tokenizer)
     conv.add_message("You are a harmless helpfull and honest assistant", "system")
     conv.add_message("Who is the King of Spain?", "user")
@@ -305,6 +314,3 @@ if __name__ == "__main__":
     conv.add_message("Who is the President of China?", "user")
     conv.generate_llama_response()
     conv.print_conversation()
-
-
-# %%
