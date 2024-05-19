@@ -29,7 +29,7 @@
         "cached": false
     },
     {
-        "text": "I'm just a computer program, so I don't have feelings, but I'm here and ready to assist you with any questions or tasks you have. How can I help you today?",
+        "text": "I'm just a computer program, so I don't have feelings, but I'm here to help you with anything you need. How can I assist you today?",
         "role": "assistant",
         "number": 3,
         "origin": "gpt-3.5-turbo",
