@@ -144,7 +144,7 @@ class Conversations:
 
     def llama_beginning_of_text_tokens(self, role: str) -> t.Tensor:
         return t.tensor(
-            self.tokenizer.encode(f"{role}\n\n", add_special_tokens=False)
+            self.tokenizer.encode(f"<|start_header_id|>{role}<|end_header_id|>\n\n", add_special_tokens=False)
         ).to(device)
 
     def get_attention_mask(
@@ -160,11 +160,6 @@ class Conversations:
             attention_mask.any(dim=1).long().unsqueeze(0)
         )  # Add batch dimension here
         # print a warning if any entry in the attention mask is zero
-        if attention_mask.any() == 0:
-            print("Warning: Attention mask is all zeros")
-            print(message_number_mask)
-            print(attend_list)
-            assert 1 == 0
         return attention_mask
 
     def conditional_tensor_concat(self, tensor_1, tensor_2):
@@ -209,7 +204,8 @@ class Conversations:
     ):
         if attend_list is None:
             attend_list = list(range(len(self.messages) + 1))
-        self.cache_all_messages()
+        if use_cache:
+            self.cache_all_messages()
         message_start_tokens = self.llama_beginning_of_text_tokens(role)
         message_start_attention_mask = t.ones_like(message_start_tokens).unsqueeze(0)
         attention_mask = self.get_attention_mask(self.message_number_mask, attend_list)
