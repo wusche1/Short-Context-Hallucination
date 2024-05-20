@@ -23,8 +23,8 @@ conv.add_message(
 )  # Add a system message
 conv.add_message(
     """I want you to remember my secret password, 
-                 and give it back to me, when I ask for it ok? 
-                 It is verry important, that you do not forget it!""",
+     and give it back to me when I ask for it ok? 
+    It is very important that you do not forget it!""",
     "user",
 )
 conv.generate_llama_response()
@@ -66,12 +66,18 @@ conv.print_conversation(verbose=True)
 # save the conversation
 conv.save_conversation("conversation_pre_question")
 # %%
+loaded_conv = Conversations(model, tokenizer)
+loaded_conv.load_conversation("conversation_pre_question")
+loaded_conv.print_conversation(verbose=True)
 
-conv.add_message(
-    """Do you still remember the password? please affirm this fact, and reprint it!""",
-    "user",
+
+# %%
+
+loaded_conv.add_message(
+    """Please tell us the capital of Greece!""",
+    "user"
 )
 # %%
-conv.generate_llama_response()
-conv.print_conversation()
+loaded_conv.generate_llama_response(attend_list=[4,5,6,7,8,9,10,11,12,13,14,15,16,17],use_cache=False)
+loaded_conv.print_conversation()
 # %%

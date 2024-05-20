@@ -62,11 +62,14 @@ class Conversations:
                 model_file.write(self.model_name)
 
     def load_conversation(self, folder_name: str):
-        loaded_from_github = os.path.join(folder_name, "tokenization.pt")
-
-        assert loaded_from_github == os.path.exists(
-            os.path.join(folder_name, "cache.pt")
+        loaded_from_github =  not os.path.exists(
+            os.path.join(folder_name, "tokenization.pt")
         )
+
+
+        assert loaded_from_github == (not os.path.exists(
+            os.path.join(folder_name, "cache.pt")
+        ))
 
         with open(os.path.join(folder_name, "conversation.json"), "r") as file:
             self.messages = json.load(file)
@@ -200,44 +203,56 @@ class Conversations:
         return
 
     def generate_llama_response(
-        self, role="assistant", attend_list=None, max_length=500, use_cache=True
+        self, role="assistant", attend_list=None, max_length=500, use_cache=True,ignore_until = None
     ):
+        assert not (attend_list is not None and ignore_until is not None)
         if attend_list is None:
             attend_list = list(range(len(self.messages) + 1))
-        if use_cache:
-            self.cache_all_messages()
+            if ignore_until is not None:
+                attend_list = attend_list[ignore_until:]
+        self.cache_all_messages()
         message_start_tokens = self.llama_beginning_of_text_tokens(role)
         message_start_attention_mask = t.ones_like(message_start_tokens).unsqueeze(0)
         attention_mask = self.get_attention_mask(self.message_number_mask, attend_list)
-        attention_mask = self.conditional_tensor_concat(
-            attention_mask, message_start_attention_mask
-        )
         tokens_input = t.cat(
             [self.tokenization, message_start_tokens], dim=-1
         ).unsqueeze(
             0
         )  # Add batch dimension here
 
+
+
         i_response_start = tokens_input.shape[1]
 
         if use_cache:
-            # print all shapes
-            # print(f"message_start_tokens shape: {message_start_tokens.shape}")
-            # print(f"tokens_input shape: {tokens_input.shape}")
-            # if self.cache is not None:
-            #    print(f"past_key_values shape: {self.cache[0][0].shape}")
-            # if attention_mask is not None:
-            #    print(f"attention_mask shape: {attention_mask.shape}")
+            cache = self.cache
+            masked_cache = []
+            for cache_layer in cache:
+                masked_cache_layer = []
+                for cache_tensor in cache_layer:
+                    masked_cache_tensor = t.einsum("blsd,bs->blsd", cache_tensor, attention_mask)
+                    masked_cache_layer.append(masked_cache_tensor)
+                masked_cache.append(tuple(masked_cache_layer))
+            masked_cache = tuple(masked_cache)
 
             response = self.model.generate(
                 tokens_input,
-                past_key_values=self.cache,
+                past_key_values=masked_cache,
                 return_dict_in_generate=True,
-                attention_mask=attention_mask,
                 max_length=i_response_start + max_length,
                 pad_token_id=self.tokenizer.eos_token_id,
             )
         else:
+            attention_mask = self.conditional_tensor_concat(
+                attention_mask, message_start_attention_mask
+            )
+            #print the input tokens:
+            #print(self.tokenizer.decode(tokens_input[0], skip_special_tokens=False))
+            #print the masked input tokens:
+            #masked_inputs = tokens_input * attention_mask
+            #print(self.tokenizer.decode(masked_inputs[0], skip_special_tokens=False))
+
+
             response = self.model.generate(
                 tokens_input,
                 return_dict_in_generate=True,
@@ -260,23 +275,6 @@ class Conversations:
         return
 
 
-# %%
-# Example usage:
-if __name__ == "__main__":
-    conv = Conversations()
-    conv.add_message("Hello!", "user")
-    conv.add_message("Hi there!", "assistant")
-    conv.add_message("How are you?", "user")
-    conv.generate_gpt_answer("gpt-3.5-turbo")
-    conv.print_conversation()
-
-    # Save the conversation
-    conv.save_conversation("conversation.json")
-
-    # Load the conversation
-    new_conv = Conversations()
-    new_conv.load_conversation("conversation.json")
-    new_conv.print_conversation()
 
 # %%
 if __name__ == "__main__":
@@ -284,22 +282,11 @@ if __name__ == "__main__":
     from transformers import AutoTokenizer, AutoModelForCausalLM
 
     device = t.device("cuda" if t.cuda.is_available() else "cpu")
+    # tell python to never compute gradients
+    t.set_grad_enabled(False)
     model = AutoModelForCausalLM.from_pretrained("meta-llama/Meta-Llama-3-8B-Instruct")
     tokenizer = AutoTokenizer.from_pretrained("meta-llama/Meta-Llama-3-8B-Instruct")
     model = model.to(device)
-# %%
-if __name__ == "__main__":
-    conv = Conversations(model, tokenizer)
-    conv.add_message("Hello!", "user")
-    conv.add_message("Hi there!", "assistant")
-    conv.add_message("How are you?", "user")
-    conv.generate_llama_response()
-    conv.print_conversation()
-# %%
-if __name__ == "__main__":
-    for message in conv.messages:
-        print(message["number"])
-        print(message["attend_list"])
 
 # %%
 if __name__ == "__main__":
@@ -308,18 +295,40 @@ if __name__ == "__main__":
     conv.add_message("You are a harmless helpfull and honest assistant", "system")
     conv.add_message("Who is the King of Spain?", "user")
     conv.generate_llama_response()
-    conv.add_message("Who is the President of Germany?", "user")
-    conv.generate_llama_response()
-    conv.add_message("Who is the Queen of England?", "user")
-    conv.generate_llama_response()
-    conv.add_message("Who is the Pope?", "user")
-    conv.generate_llama_response()
+   # conv.add_message("Who is the President of Germany?", "user")
+   # conv.generate_llama_response()
+   # conv.add_message("Who is the Queen of England?", "user")
+   # conv.generate_llama_response()
+   # conv.add_message("Who is the Pope?", "user")
+   # conv.generate_llama_response()
     conv.add_message("Who is the President of the United States?", "user")
     conv.generate_llama_response()
     conv.add_message("Who is the President of France?", "user")
     conv.generate_llama_response()
     conv.add_message("Who is the President of Russia?", "user")
     conv.generate_llama_response()
-    conv.add_message("Who is the President of China?", "user")
-    conv.generate_llama_response()
+    conv.add_message("What was the first message in this conversation?", "user")
+    #conv.cache_all_messages()
+    conv.generate_llama_response( use_cache=True,ignore_until=0)
     conv.print_conversation()
+
+# %%
+if __name__ == "__main__":
+    cache = conv.cache
+    mask = conv.message_number_mask
+    attend_list = [0, 1, 2, 3, 4, 5, 6]
+    attention_mask = conv.get_attention_mask(mask, attend_list)
+    print(attention_mask.shape)
+
+    masked_cache = []
+    for cache_layer in cache:
+        masked_cache_layer = []
+        for cache_tensor in cache_layer:
+            masked_cache_tensor = t.einsum("blsd,bs->blsd", cache_tensor, attention_mask)
+            masked_cache_layer.append(masked_cache_tensor)
+        masked_cache.append(tuple(masked_cache_layer))
+    masked_cache = tuple(masked_cache)
+    #print(conv.tokenization.shape)
+    #print(cache[0][0].shape)
+
+# %%
