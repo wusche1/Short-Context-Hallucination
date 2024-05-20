@@ -25,7 +25,6 @@ class Conversation:
             self.model_name = self.model.config._name_or_path
         else:
             self.model_name = None
-        self.cache = None
 
     def prompt_llama(self, prompt: str, ignore_until=0) -> str:
         self.messages.append({"content": prompt, "role": "user"})
