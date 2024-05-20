@@ -12,6 +12,7 @@ venv.bak/
 __pycache__/
 *.py[cod]
 *$py.class
+*cache.pt
 
 # Exclude the file bash_script.txt
 bash_script.txt

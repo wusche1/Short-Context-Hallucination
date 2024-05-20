@@ -43,44 +43,43 @@ class Conversations:
         }
         self.messages.append(message)
 
-    def save_conversation(self, file_path: str):
-        base_dir = os.path.dirname(file_path)
-        os.makedirs(base_dir, exist_ok=True)
+    def save_conversation(self, folder_name: str):
+        os.makedirs(folder_name, exist_ok=True)
 
-        with open(file_path, "w") as file:
-            json.dump(self.messages, file, indent=4)
+        # Save the conversation
+        with open(os.path.join(folder_name, "conversation.json"), "w") as file:
+            json.dump(self.messages, file)
 
-        t.save(self.tokenization, os.path.join(base_dir, "tokenization.pt"))
-        t.save(self.cache, os.path.join(base_dir, "cache.pt"))
+        t.save(self.tokenization, os.path.join(folder_name, "tokenization.pt"))
+        t.save(self.cache, os.path.join(folder_name, "cache.pt"))
         t.save(
-            self.message_number_mask, os.path.join(base_dir, "message_number_mask.pt")
+            self.message_number_mask,
+            os.path.join(folder_name, "message_number_mask.pt"),
         )
 
         if self.model_name is not None:
-            with open(os.path.join(base_dir, "model_name.txt"), "w") as model_file:
+            with open(os.path.join(folder_name, "model_name.txt"), "w") as model_file:
                 model_file.write(self.model_name)
 
-    def load_conversation(self, file_path: str):
-        base_dir = os.path.dirname(file_path)
-
-        with open(file_path, "r") as file:
+    def load_conversation(self, folder_name: str):
+        with open(os.path.join(folder_name, "conversation.json"), "r") as file:
             self.messages = json.load(file)
 
-        tokenization_path = os.path.join(base_dir, "tokenization.pt")
-        if os.path.exists(tokenization_path):
-            self.tokenization = t.load(tokenization_path, map_location=device)
-
-        cache_path = os.path.join(base_dir, "cache.pt")
-        if os.path.exists(cache_path):
-            self.cache = t.load(cache_path, map_location=device)
-
-        message_number_mask_path = os.path.join(base_dir, "message_number_mask.pt")
-        if os.path.exists(message_number_mask_path):
-            self.message_number_mask = t.load(
-                message_number_mask_path, map_location=device
+        self.tokenization = t.load(
+            os.path.join(folder_name, "tokenization.pt"), map_location=device
+        )
+        # check if cache exists
+        if os.path.exists(os.path.join(folder_name, "cache.pt")):
+            self.cache = t.load(
+                os.path.join(folder_name, "cache.pt"), map_location=device
             )
+        else:
+            self.cache = None
+        self.message_number_mask = t.load(
+            os.path.join(folder_name, "message_number_mask.pt"), map_location=device
+        )
 
-        model_name_path = os.path.join(base_dir, "model_name.txt")
+        model_name_path = os.path.join(folder_name, "model_name.txt")
         if os.path.exists(model_name_path):
             with open(model_name_path, "r") as model_file:
                 self.model_name = model_file.read()
@@ -95,6 +94,7 @@ class Conversations:
                 print(f"{message['role']}: {message['text']}")
 
     def message_format(self, attend_list: List[int]) -> List[Dict[str, str]]:
+        attend_list = [i for i in attend_list if i < len(self.messages)]
         return [
             {"role": self.messages[pos]["role"], "content": self.messages[pos]["text"]}
             for pos in attend_list
