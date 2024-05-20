@@ -62,19 +62,32 @@ class Conversations:
                 model_file.write(self.model_name)
 
     def load_conversation(self, folder_name: str):
+        loaded_from_github = os.path.join(folder_name, "tokenization.pt")
+
+        assert loaded_from_github == os.path.exists(
+            os.path.join(folder_name, "cache.pt")
+        )
+
         with open(os.path.join(folder_name, "conversation.json"), "r") as file:
             self.messages = json.load(file)
+            for message in self.messages:
+                message["cached"] = not loaded_from_github
 
-        self.tokenization = t.load(
-            os.path.join(folder_name, "tokenization.pt"), map_location=device
-        )
+        # check if tokenization exists
+        if loaded_from_github:
+            self.tokenization = None
+        else:
+            self.tokenization = t.load(
+                os.path.join(folder_name, "tokenization.pt"), map_location=device
+            )
+
         # check if cache exists
-        if os.path.exists(os.path.join(folder_name, "cache.pt")):
+        if loaded_from_github:
+            self.cache = None
+        else:
             self.cache = t.load(
                 os.path.join(folder_name, "cache.pt"), map_location=device
             )
-        else:
-            self.cache = None
         self.message_number_mask = t.load(
             os.path.join(folder_name, "message_number_mask.pt"), map_location=device
         )
