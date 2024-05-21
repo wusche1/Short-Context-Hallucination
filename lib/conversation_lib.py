@@ -67,26 +67,33 @@ class Conversation:
         #        past_key_values=self.cache,
         #    ).past_key_values
 
-    def prompt_llama(self, prompt: str) -> str:
+    def prompt_llama(self, prompt: str, keep_answer=True, temperature=0.0):
         """Add a user prompt, generate a response, and update the conversation."""
         self.messages.append({"content": prompt, "role": "user"})
         tokens = self._tokenize_messages(add_generation_prompt=True)
         n_tokens = tokens.shape[1]
 
+        if temperature == 0.0:
+            do_sample = False
+        else:
+            do_sample = True
         out = self.model.generate(
             input_ids=tokens,
             max_length=n_tokens + 200,
             pad_token_id=self.tokenizer.eos_token_id,
-            # return_dict_in_generate=True,
-            # past_key_values=self.cache,
+            do_sample=do_sample,
+            temperature=temperature,
         )
 
         # self.cache = out.past_key_values
 
         response = self.tokenizer.decode(out[0, n_tokens:], skip_special_tokens=True)
-        self.messages.append(
-            {"content": response, "role": "assistant", "origin": self.model_name}
-        )
+        if keep_answer:
+            self.messages.append(
+                {"content": response, "role": "assistant", "origin": self.model_name}
+            )
+        else:
+            self.messages = self.messages[:-1]
         return response
 
     def prompt_gpt(self, prompt: str, model: str = "gpt-3.5-turbo") -> str:
