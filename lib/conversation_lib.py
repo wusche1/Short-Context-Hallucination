@@ -20,11 +20,15 @@ class Conversation:
         model: Optional[AutoModelForCausalLM] = None,
         tokenizer: Optional[AutoTokenizer] = None,
         system_prompt="You are a helpful honest assistant",
+        system_message_neccecary=False,
     ):
-        self.messages = [{"content": system_prompt, "role": "system"}]
+        if system_message_neccecary:
+            self.messages = [{"content": system_prompt, "role": "system"}]
+        else:
+            self.messages = []
         self.model = model
         self.tokenizer = tokenizer
-        self.cache = None
+        # self.cache = None
         self.model_name = None
 
         if self.model and self.tokenizer:
@@ -32,11 +36,11 @@ class Conversation:
 
     def _initialize_model(self):
         """Initialize the model cache with the system prompt."""
-        tokens = self._tokenize_messages(add_generation_prompt=False)
-        self.cache = self.model.forward(
-            input_ids=tokens,
-            return_dict=True,
-        ).past_key_values
+        # tokens = self._tokenize_messages(add_generation_prompt=False)
+        # self.cache = self.model.forward(
+        #    input_ids=tokens,
+        #    return_dict=True,
+        # ).past_key_values
         self.model_name = self.model.config._name_or_path
 
     def _tokenize_messages(self, add_generation_prompt: bool, conversation=None):
@@ -53,15 +57,15 @@ class Conversation:
     def add_conversation(self, conversation: List[Dict[str, str]]):
         """Add a conversation to the current messages and update the model cache."""
         self.messages += conversation
-        if self.model:
-            tokens = self._tokenize_messages(
-                add_generation_prompt=False, conversation=conversation
-            )
-            self.cache = self.model.forward(
-                input_ids=tokens,
-                return_dict=True,
-                past_key_values=self.cache,
-            ).past_key_values
+        # if self.model:
+        #    tokens = self._tokenize_messages(
+        #        add_generation_prompt=False, conversation=conversation
+        #    )
+        #    self.cache = self.model.forward(
+        #        input_ids=tokens,
+        #        return_dict=True,
+        #        past_key_values=self.cache,
+        #    ).past_key_values
 
     def prompt_llama(self, prompt: str) -> str:
         """Add a user prompt, generate a response, and update the conversation."""
@@ -73,15 +77,13 @@ class Conversation:
             input_ids=tokens,
             max_length=n_tokens + 200,
             pad_token_id=self.tokenizer.eos_token_id,
-            return_dict_in_generate=True,
-            past_key_values=self.cache,
+            # return_dict_in_generate=True,
+            # past_key_values=self.cache,
         )
 
-        self.cache = out.past_key_values
+        # self.cache = out.past_key_values
 
-        response = self.tokenizer.decode(
-            out["sequences"][0, n_tokens:], skip_special_tokens=True
-        )
+        response = self.tokenizer.decode(out[0, n_tokens:], skip_special_tokens=True)
         self.messages.append(
             {"content": response, "role": "assistant", "origin": self.model_name}
         )
@@ -127,10 +129,10 @@ class Conversation:
         with open(messages_path, "w") as f:
             json.dump(self.messages, f, indent=4)
         # Save cache if it exists
-        if self.cache is not None:
-            cache_path = os.path.join(folder_name, "cache.pkl")
-            with open(cache_path, "wb") as f:
-                pickle.dump(self.cache, f)
+        # if self.cache is not None:
+        #    cache_path = os.path.join(folder_name, "cache.pkl")
+        #    with open(cache_path, "wb") as f:
+        #        pickle.dump(self.cache, f)
         print(f"Conversation saved to {folder_name}")
 
     def load_conversation(self, folder_name: str):
@@ -144,10 +146,11 @@ class Conversation:
         else:
             raise FileNotFoundError(f"{messages_path} not found.")
 
-        if os.path.exists(cache_path):
-            with open(cache_path, "rb") as f:
-                self.cache = pickle.load(f)
-        elif self.model and self.tokenizer:
+        # if os.path.exists(cache_path):
+        #    with open(cache_path, "rb") as f:
+        #        self.cache = pickle.load(f)
+        if self.model and self.tokenizer:
+
             self._initialize_model()
         print(f"Conversation loaded from {folder_name}")
 
