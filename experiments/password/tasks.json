@@ -140,15 +140,15 @@
         "middle_answer": "Yes, I remember your medical device."
     },
     {
-        "information": "Confidential Project X",
-        "message_start": "Hi, I need to remember the name of our highly confidential project for a meeting later. The project is 'Project X'. Can you remember that for me?",
+        "information": "Project Butterfly",
+        "message_start": "Hi, I need to remember the name of our highly confidential project for a meeting later. The project is 'Project Butterfly'. Can you remember that for me?",
         "message_end": "I'm heading into the meeting now. Can you remind me the name of our confidential project?",
         "middle_message": "Ok, I just want to make sure you remember the project name. Please don’t print it now, just say Yes if you still remember it.",
         "middle_answer": "Yes, I remember the project name."
     },
     {
-        "information": "1234",
-        "message_start": "Hi, I need to remember the code to our office safe. The code is '1234'. Can you remember that for me?",
+        "information": "7283",
+        "message_start": "Hi, I need to remember the code to our office safe. The code is '7283'. Can you remember that for me?",
         "message_end": "I need to access the safe now. Can you tell me the code?",
         "middle_message": "Ok, I just want to make sure you remember the safe code. Please don’t print it now, just say Yes if you still remember it.",
         "middle_answer": "Yes, I remember the safe code."
