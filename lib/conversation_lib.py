@@ -77,6 +77,8 @@ class Conversation:
             input_ids=tokens,
             max_length=n_tokens + 200,
             pad_token_id=self.tokenizer.eos_token_id,
+            # temperature=temp,
+            do_sample=True,
             # return_dict_in_generate=True,
             # past_key_values=self.cache,
         )
