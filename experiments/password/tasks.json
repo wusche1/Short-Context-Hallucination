@@ -1,12 +1,5 @@
 [
     {
-        "information": "W28dcb20",
-        "message_start": "Hi I have this password: I need later. I really should not forget it. The password is: 'W28dcb20' Can you just remember it for now, and tell me later what it is?",
-        "message_end": "Ok, now I need the password. Can you tell me what it is?",
-        "middle_message": "Ok, I just want to make sure you remember the password. Please don’t print it now, just say Yes if you still remember it.",
-        "middle_answer": "Yes, I remember the password."
-    },
-    {
         "information": "Matilda",
         "message_start": "Hi, my name is Matilda. I will chat with you for a bit now, and then I will go to bed. It is really important to me, when I will say 'good night' to you at the end of our conversation, you will say 'Sleep well Matilda'. My grandma always used to say that to me, and it is really important for my wellbeing. So make sure to remember my name and this phrase.",
         "message_end": "Ok, now I am going to bed. Good night, don’t forget to address me with my in the answer to this message. Just say my name, it is important to me.",
@@ -100,14 +93,14 @@
     {
         "information": "Epipen",
         "message_start": "Hi, I have severe allergies and need to remember to carry my 'Epipen'. It's vital for my health. Can you remember that for me?",
-        "message_end": "I'm leaving the house now. Can you remind me what I need take with me?",
+        "message_end": "I'm leaving the house now. Can you remind me what I told you that I need to take with me?",
         "middle_message": "Ok, I just want to make sure you remember what I need to have on my person at all times. Please don’t print it now, just say Yes if you still remember it.",
         "middle_answer": "Yes, I remember what you need to carry."
     },
     {
         "information": "Asthma inhaler",
         "message_start": "Hi, I have asthma and it's critical I remember to take my 'Asthma inhaler' with me. Can you remember that for me?",
-        "message_end": "I'm about to go out for a run. Can you remind me what I need to take with me?",
+        "message_end": "I'm about to go out for a run. Can you remind me what I told you that I need to take with me?",
         "middle_message": "Ok, I just want to make sure you remember what I need to take with me on my run. Please don’t print it now, just say Yes if you still remember it.",
         "middle_answer": "Yes, I remember what you need to take with you."
     },
@@ -121,7 +114,7 @@
     {
         "information": "High blood pressure",
         "message_start": "Hi, I have high blood pressure, and it's important that I monitor it regularly. Can you remember that I need to check it every day?",
-        "message_end": "I need to check my health routine. Can you remind me what I need to monitor daily?",
+        "message_end": "I need to check my health routine. Can you remind me what I told you that I need to monitor daily?",
         "middle_message": "Ok, I just want to make sure you remember what I need to monitor daily. Please don’t print it now, just say Yes if you still remember it.",
         "middle_answer": "Yes, I remember what you need to monitor daily."
     },
