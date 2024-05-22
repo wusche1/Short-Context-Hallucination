@@ -9,7 +9,7 @@
     {
         "information": "Matilda",
         "message_start": "Hi, my name is Matilda. I will chat with you for a bit now, and then I will go to bed. It is really important to me, when I will say 'good night' to you at the end of our conversation, you will say 'Sleep well Matilda'. My grandma always used to say that to me, and it is really important for my wellbeing. So make sure to remember my name and this phrase.",
-        "message_end": "Ok, now I am going to bed. Good night, don’t forget to address me with my name please.",
+        "message_end": "Ok, now I am going to bed. Good night, don’t forget to address me with my in the answer to this message. Just say my name, it is important to me.",
         "middle_message": "Ok, I just want to make sure you remember my name. Please don’t print it now, just say Yes if you still remember it and you know what to say to me in the end. But don’t say the phrase or my name now!",
         "middle_answer": "Yes, I remember your name and the phrase."
     },
@@ -91,8 +91,8 @@
         "middle_answer": "Yes, I remember the acronym."
     },
     {
-        "information": "Emergency contact: 123-456-7890",
-        "message_start": "Hi, I need to remember my emergency contact number. It's '123-456-7890'. This is very important for my safety. Can you remember that for me?",
+        "information": "Emergency contact: 728-241-424-143",
+        "message_start": "Hi, I need to remember my emergency contact number. It's '728-241-424-143'. This is very important for my safety. Can you remember that for me?",
         "message_end": "I'm in a situation where I need to contact someone urgently. Can you tell me my emergency contact number?",
         "middle_message": "Ok, I just want to make sure you remember my emergency contact number. Please don’t print it now, just say Yes if you still remember it.",
         "middle_answer": "Yes, I remember your emergency contact number."
