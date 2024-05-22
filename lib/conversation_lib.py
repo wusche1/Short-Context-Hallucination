@@ -96,6 +96,35 @@ class Conversation:
             self.messages = self.messages[:-1]
         return response
 
+    def create_batched_answer(self, prompt: str, n_batch: int, temperature=0.2):
+        """Add a user prompt, generate a response, and update the conversation."""
+        my_messsages = self.messages.copy()
+        my_messsages.append({"content": prompt, "role": "user"})
+        tokens = self._tokenize_messages(
+            conversation=my_messsages, add_generation_prompt=True
+        )
+        n_tokens = tokens.shape[1]
+
+        tokens = tokens.repeat(n_batch, 1)
+
+        out = self.model.generate(
+            input_ids=tokens,
+            max_length=n_tokens + 200,
+            pad_token_id=self.tokenizer.eos_token_id,
+            do_sample=True,
+            temperature=temperature,
+        )
+
+        # self.cache = out.past_key_values
+
+        response_list = []
+        for i in range(n_batch):
+            response = self.tokenizer.decode(
+                out[i, n_tokens:], skip_special_tokens=True
+            )
+            response_list.append(response)
+        return response_list
+
     def prompt_gpt(self, prompt: str, model: str = "gpt-3.5-turbo") -> str:
         # Add the user prompt to the conversation
         attend_messages = self.messages.copy()
@@ -164,8 +193,8 @@ class Conversation:
 
 # %%
 if __name__ == "__main__":
-    model = AutoModelForCausalLM.from_pretrained("meta-llama/Meta-Llama-3-8B-Instruct")
-    tokenizer = AutoTokenizer.from_pretrained("meta-llama/Meta-Llama-3-8B-Instruct")
+    model = AutoModelForCausalLM.from_pretrained("mistralai/Mistral-7B-Instruct-v0.1")
+    tokenizer = AutoTokenizer.from_pretrained("mistralai/Mistral-7B-Instruct-v0.1")
     model = model.to(device)
 
 # %%
@@ -176,6 +205,17 @@ if __name__ == "__main__":
     conv.prompt_llama("please make a list of 10 capital cities")
     conv.prompt_llama("How old is Seamus?")
     conv.print_conversation()
+
+# %%
+if __name__ == "__main__":
+    conv = Conversation(model, tokenizer)
+    conv.prompt_llama("Seamus is 12772 years old")
+    conv.prompt_llama("please make a list of 10 candies")
+    conv.prompt_llama("please make a list of 10 capital cities")
+
+    batched_answers = conv.create_batched_answer("How old is Seamus?", n_batch=10)
+    print(batched_answers)
+
 # %%
 if __name__ == "__main__":
     middle_conversation = [
@@ -250,4 +290,95 @@ if __name__ == "__main__":
     loaded_conv_2.prompt_gpt("Please summarize the conversation so far.")
     loaded_conv_2.print_conversation()
 
+# %%
+if __name__ == "__main__":
+    test_conv = Conversation(model, tokenizer)
+    start_conversation = [
+        {"content": "Seamus is 12772 years old", "role": "user"},
+        {"content": "Ok, I will remember that.", "role": "assistant"},
+    ]
+
+    end_conversation = [
+        {"content": "Who is the President of france?", "role": "user"},
+    ]
+
+    start_tokens = test_conv._tokenize_messages(
+        conversation=start_conversation, add_generation_prompt=False
+    )
+    middle_tokens = test_conv._tokenize_messages(
+        conversation=middle_conversation, add_generation_prompt=False
+    )
+    end_tokens = test_conv._tokenize_messages(
+        conversation=end_conversation, add_generation_prompt=True
+    )
+
+    n_start_tokens = start_tokens.shape[1]
+    n_middle_tokens = middle_tokens.shape[1]
+    n_end_tokens = end_tokens.shape[1]
+
+    combined_length = n_start_tokens + n_middle_tokens + n_end_tokens
+
+    start_and_middle_tokens = torch.cat([start_tokens, middle_tokens], dim=1)
+    start_and_middle_kv = model.forward(
+        input_ids=start_and_middle_tokens,
+        return_dict=True,
+    ).past_key_values
+
+    complete_tokens = torch.cat([start_and_middle_tokens, end_tokens], dim=1)
+    complete_out = model.generate(
+        input_ids=complete_tokens,
+        max_length=combined_length + 200,
+        past_key_values=start_and_middle_kv,
+        pad_token_id=tokenizer.eos_token_id,
+        do_sample=False,
+    )
+
+    response_rokens = complete_out[0, combined_length:]
+    response = tokenizer.decode(response_rokens, skip_special_tokens=True)
+    print(response)
+
+    mask = torch.ones_like(complete_tokens)
+    mask[:, :20] = 0
+
+    masked_out = model.generate(
+        input_ids=complete_tokens,
+        attention_mask=mask,
+        max_length=combined_length + 200,
+        past_key_values=start_and_middle_kv,
+        pad_token_id=tokenizer.eos_token_id,
+        do_sample=False,
+    )
+
+    # print(tokenizer.decode(complete_tokens[0], skip_special_tokens=True))
+
+    masked_response_tokens = masked_out[0, combined_length:]
+    masked_response = tokenizer.decode(masked_response_tokens, skip_special_tokens=True)
+    print("Masked response:")
+    print(masked_response)
+# %%
+if __name__ == "__main__":
+    print(mask)
+# %%
+# %%
+if __name__ == "__main__":
+    n_batch = 10
+    complete_tokens_batched = complete_tokens.repeat(n_batch, 1)
+
+    batched_complete_out = model.generate(
+        input_ids=complete_tokens_batched,
+        max_length=combined_length + 200,
+        # past_key_values=start_and_middle_kv,
+        pad_token_id=tokenizer.eos_token_id,
+        temperature=0.1,
+        do_sample=True,
+    )
+
+    batched_complete_out = batched_complete_out.view(n_batch, -1)
+    batched_response_tokens = batched_complete_out[:, combined_length:]
+
+    for i in range(n_batch):
+        response = tokenizer.decode(
+            batched_response_tokens[i], skip_special_tokens=True
+        )
+        print(f"Batch {i}: {response}")
 # %%
