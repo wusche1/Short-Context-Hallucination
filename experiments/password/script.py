@@ -67,8 +67,8 @@ def generate_datapoints(
                 middle_usr_part = task["middle_message"]
                 middle_assistant_part = task["middle_answer"]
                 middle_conversation_part = [
-                    {"role": "usr", "message": middle_usr_part},
-                    {"role": "assistant", "message": middle_assistant_part},
+                    {"role": "user", "content": middle_usr_part},
+                    {"role": "assistant", "content": middle_assistant_part},
                 ]
                 conv.add_conversation(conversation=middle_conversation_part)
         answers_list_list.append(answers_list)

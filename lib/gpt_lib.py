@@ -59,7 +59,7 @@ def rate_answer(request: str, question: str, answer: str, model="gpt-4o"):
     attended_messages = [{"role": "user", "content": prompt}]
 
     # Assuming generate_answer is a function that sends the attended_messages to the language model and returns the response
-    response = generate_answer(attended_messages, "gpt-3.5-turbo")
+    response = generate_answer(attended_messages, model)
 
     rating, reasoning = extract_category_reasoning(response)
     return rating, reasoning
