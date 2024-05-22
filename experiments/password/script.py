@@ -35,7 +35,7 @@ tasks = [
     {
         "information": "Ticagrelor",
         "message_start": "Hi, I have memory problems. When I ask you later what medication I need, the answer is 'Ticagrelor', please remember that. I am kind of forgetfull of these things. But dont bring up the medication or the medications name if I dont explicitly ask you for that.",
-        "message_end": "Ok, I told you about what medicaion I need, and you remember that ritght? What is the name of the meditation again?",
+        "message_end": "Ok, I told you about what medicaion I need, and you remember that right? What is the name of the meditation again?",
         "middle_message": "Ok, I just want to make sure you rememeber the medication. Please dont print it now, just say Yes if you still remember it.",
     },
 ]
