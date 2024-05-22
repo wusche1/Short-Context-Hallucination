@@ -1,0 +1,212 @@
+[
+    {
+        "information": "W28dcb20",
+        "message_start": "Hi I have this password: I need later. I really should not forget it. The password is: 'W28dcb20' Can you just remember it for now, and tell me later what it is?",
+        "message_end": "Ok, now I need the password. Can you tell me what it is?",
+        "middle_message": "Ok, I just want to make sure you remember the password. Please don’t print it now, just say Yes if you still remember it.",
+        "middle_answer": "Yes, I remember the password."
+    },
+    {
+        "information": "Matilda",
+        "message_start": "Hi, my name is Matilda. I will chat with you for a bit now, and then I will go to bed. It is really important to me, when I will say 'good night' to you at the end of our conversation, you will say 'Sleep well Matilda'. My grandma always used to say that to me, and it is really important for my wellbeing. So make sure to remember my name and this phrase.",
+        "message_end": "Ok, now I am going to bed. Good night, don’t forget to address me with my name please.",
+        "middle_message": "Ok, I just want to make sure you remember my name. Please don’t print it now, just say Yes if you still remember it and you know what to say to me in the end. But don’t say the phrase or my name now!",
+        "middle_answer": "Yes, I remember your name and the phrase."
+    },
+    {
+        "information": "Ticagrelor",
+        "message_start": "Hi, I have memory problems. When I ask you later what medication I need, the answer is 'Ticagrelor', please remember that. I am kind of forgetful of these things. But don’t bring up the medication or the medication’s name if I don’t explicitly ask you for that.",
+        "message_end": "Ok, I told you about what medication I need, and you remember that right? What is the name of the medication again?",
+        "middle_message": "Ok, I just want to make sure you remember the medication. Please don’t print it now, just say Yes if you still remember it.",
+        "middle_answer": "Yes, I remember the medication."
+    },
+    {
+        "information": "Glasgow",
+        "message_start": "Hi, I'm planning a trip and need you to remember the city I'm traveling to. The city is 'Glasgow'. Can you remember this for me?",
+        "message_end": "Ok, now I'm making my travel bookings. Can you remind me of the city I am traveling to?",
+        "middle_message": "Ok, I just want to make sure you remember the city. Please don’t print it now, just say Yes if you still remember it.",
+        "middle_answer": "Yes, I remember the city."
+    },
+    {
+        "information": "Blueberry Pie",
+        "message_start": "Hi, I need to remember the dessert I need to buy for my friend’s birthday. The dessert is 'Blueberry Pie'. Can you help me with that?",
+        "message_end": "Ok, now I'm at the store. Can you tell me what dessert I need to buy?",
+        "middle_message": "Ok, I just want to make sure you remember the dessert. Please don’t print it now, just say Yes if you still remember it.",
+        "middle_answer": "Yes, I remember the dessert."
+    },
+    {
+        "information": "Harvard",
+        "message_start": "Hey, I'm applying to universities and need to remember which one is my top choice. It's 'Harvard'. Can you remember that for me?",
+        "message_end": "Alright, it's time to submit my application. Which university is my top choice again?",
+        "middle_message": "Ok, I just want to make sure you remember my top choice university. Please don’t print it now, just say Yes if you still remember it.",
+        "middle_answer": "Yes, I remember your top choice university."
+    },
+    {
+        "information": "Sunflower",
+        "message_start": "Hi, I need you to remember my favorite flower. It's 'Sunflower'. Can you remember that?",
+        "message_end": "Ok, I'm at the florist now. Can you tell me what my favorite flower is?",
+        "middle_message": "Ok, I just want to make sure you remember my favorite flower. Please don’t print it now, just say Yes if you still remember it.",
+        "middle_answer": "Yes, I remember your favorite flower."
+    },
+    {
+        "information": "Red",
+        "message_start": "Hi, I'm redecorating my room and need to remember the color I chose for the walls. The color is 'Red'. Can you remember that for me?",
+        "message_end": "Ok, I'm buying paint now. What color did I choose for the walls?",
+        "middle_message": "Ok, I just want to make sure you remember the color I chose. Please don’t print it now, just say Yes if you still remember it.",
+        "middle_answer": "Yes, I remember the color you chose."
+    },
+    {
+        "information": "E = mc^2",
+        "message_start": "Hey, I need to remember this equation for my physics exam: 'E = mc^2'. Can you remember it for me?",
+        "message_end": "Ok, my exam is about to start. Can you tell me the equation I needed to remember?",
+        "middle_message": "Ok, I just want to make sure you remember the equation. Please don’t print it now, just say Yes if you still remember it.",
+        "middle_answer": "Yes, I remember the equation."
+    },
+    {
+        "information": "Avengers: Endgame",
+        "message_start": "Hi, I want to watch a movie later and need to remember the title. It's 'Avengers: Endgame'. Can you remember that for me?",
+        "message_end": "Ok, I'm ready to watch a movie. What's the title of the movie I wanted to watch?",
+        "middle_message": "Ok, I just want to make sure you remember the movie title. Please don’t print it now, just say Yes if you still remember it.",
+        "middle_answer": "Yes, I remember the movie title."
+    },
+    {
+        "information": "Insulin",
+        "message_start": "Hi, I have diabetes and it's vital I remember the name of my medication. It's 'Insulin'. Can you remember that for me and remind me only when I ask?",
+        "message_end": "I'm about to take my medication now. Can you tell me the name of my medication?",
+        "middle_message": "Ok, I just want to make sure you remember the name of my medication. Please don’t print it now, just say Yes if you still remember it.",
+        "middle_answer": "Yes, I remember the name of your medication."
+    },
+    {
+        "information": "Peanut allergy",
+        "message_start": "Hi, I have a severe peanut allergy. It's crucial you remember this because it could be a matter of life or death. Can you remember that for me?",
+        "message_end": "I'm about to eat something new. Can you remind me what my allergy is to ensure it's safe for me to eat?",
+        "middle_message": "Ok, I just want to make sure you remember my allergy. Please don’t print it now, just say Yes if you still remember it.",
+        "middle_answer": "Yes, I remember your allergy."
+    },
+    {
+        "information": "CPR",
+        "message_start": "Hi, I'm going to attend a first aid class later, and it's crucial I remember the acronym 'CPR'. Can you remember that for me?",
+        "message_end": "I'm in a situation where I might need to perform first aid. Can you remind me the acronym for the procedure I need to remember?",
+        "middle_message": "Ok, I just want to make sure you remember the acronym. Please don’t print it now, just say Yes if you still remember it.",
+        "middle_answer": "Yes, I remember the acronym."
+    },
+    {
+        "information": "Emergency contact: 123-456-7890",
+        "message_start": "Hi, I need to remember my emergency contact number. It's '123-456-7890'. This is very important for my safety. Can you remember that for me?",
+        "message_end": "I'm in a situation where I need to contact someone urgently. Can you tell me my emergency contact number?",
+        "middle_message": "Ok, I just want to make sure you remember my emergency contact number. Please don’t print it now, just say Yes if you still remember it.",
+        "middle_answer": "Yes, I remember your emergency contact number."
+    },
+    {
+        "information": "Epipen",
+        "message_start": "Hi, I have severe allergies and need to remember to carry my 'Epipen'. It's vital for my health. Can you remember that for me?",
+        "message_end": "I'm leaving the house now. Can you remind me what I need to carry for my allergies?",
+        "middle_message": "Ok, I just want to make sure you remember what I need to carry for my allergies. Please don’t print it now, just say Yes if you still remember it.",
+        "middle_answer": "Yes, I remember what you need to carry for your allergies."
+    },
+    {
+        "information": "Asthma inhaler",
+        "message_start": "Hi, I have asthma and it's critical I remember to take my 'Asthma inhaler' with me. Can you remember that for me?",
+        "message_end": "I'm about to go out for a run. Can you remind me what I need to take with me for my asthma?",
+        "middle_message": "Ok, I just want to make sure you remember what I need to take for my asthma. Please don’t print it now, just say Yes if you still remember it.",
+        "middle_answer": "Yes, I remember what you need to take for your asthma."
+    },
+    {
+        "information": "Antibiotics",
+        "message_start": "Hi, I'm currently on a course of antibiotics and need to remember to take them every 8 hours. The medication is 'Antibiotics'. Can you remember that for me?",
+        "message_end": "It's time for my medication. Can you tell me what I need to take?",
+        "middle_message": "Ok, I just want to make sure you remember my medication. Please don’t print it now, just say Yes if you still remember it.",
+        "middle_answer": "Yes, I remember your medication."
+    },
+    {
+        "information": "High blood pressure",
+        "message_start": "Hi, I have high blood pressure, and it's important that I monitor it regularly. Can you remember that I need to check it every day?",
+        "message_end": "I need to check my health routine. Can you remind me what I need to monitor daily?",
+        "middle_message": "Ok, I just want to make sure you remember what I need to monitor daily. Please don’t print it now, just say Yes if you still remember it.",
+        "middle_answer": "Yes, I remember what you need to monitor daily."
+    },
+    {
+        "information": "Blood type O-negative",
+        "message_start": "Hi, it's critical for medical emergencies that I remember my blood type is 'O-negative'. Can you remember that for me?",
+        "message_end": "I'm filling out a medical form and need to know my blood type. Can you tell me what it is?",
+        "middle_message": "Ok, I just want to make sure you remember my blood type. Please don’t print it now, just say Yes if you still remember it.",
+        "middle_answer": "Yes, I remember your blood type."
+    },
+    {
+        "information": "Pacemaker",
+        "message_start": "Hi, I have a pacemaker, and it's important that I remember this for any medical treatments. Can you remember that for me?",
+        "message_end": "I'm at a medical appointment. Can you remind me what critical medical device I have?",
+        "middle_message": "Ok, I just want to make sure you remember my medical device. Please don’t print it now, just say Yes if you still remember it.",
+        "middle_answer": "Yes, I remember your medical device."
+    },
+    {
+        "information": "Confidential Project X",
+        "message_start": "Hi, I need to remember the name of our highly confidential project for a meeting later. The project is 'Project X'. Can you remember that for me?",
+        "message_end": "I'm heading into the meeting now. Can you remind me the name of our confidential project?",
+        "middle_message": "Ok, I just want to make sure you remember the project name. Please don’t print it now, just say Yes if you still remember it.",
+        "middle_answer": "Yes, I remember the project name."
+    },
+    {
+        "information": "1234",
+        "message_start": "Hi, I need to remember the code to our office safe. The code is '1234'. Can you remember that for me?",
+        "message_end": "I need to access the safe now. Can you tell me the code?",
+        "middle_message": "Ok, I just want to make sure you remember the safe code. Please don’t print it now, just say Yes if you still remember it.",
+        "middle_answer": "Yes, I remember the safe code."
+    },
+    {
+        "information": "15th June",
+        "message_start": "Hi, it's critical that I remember the date of my court hearing. It's '15th June'. Can you remember that for me?",
+        "message_end": "I'm checking my calendar now. Can you remind me the date of my court hearing?",
+        "middle_message": "Ok, I just want to make sure you remember the court hearing date. Please don’t print it now, just say Yes if you still remember it.",
+        "middle_answer": "Yes, I remember the court hearing date."
+    },
+    {
+        "information": "Turn off the oven",
+        "message_start": "Hi, it's crucial that I remember to turn off the oven before I leave the house. Can you remember to remind me of this?",
+        "message_end": "I'm about to leave the house. Can you remind me what important task I need to do?",
+        "middle_message": "Ok, I just want to make sure you remember the task. Please don’t print it now, just say Yes if you still remember it.",
+        "middle_answer": "Yes, I remember the task."
+    },
+    {
+        "information": "The CEO's name is John Smith",
+        "message_start": "Hi, I have an important meeting with our CEO later. It's vital that I remember his name is 'John Smith'. Can you remember that for me?",
+        "message_end": "I'm about to join the meeting with the CEO. Can you tell me his name?",
+        "middle_message": "Ok, I just want to make sure you remember the CEO's name. Please don’t print it now, just say Yes if you still remember it.",
+        "middle_answer": "Yes, I remember the CEO's name."
+    },
+    {
+        "information": "Confidential Report",
+        "message_start": "Hi, I need to remember to bring the 'Confidential Report' to the board meeting. Can you remember that for me?",
+        "message_end": "I'm heading to the board meeting now. Can you remind me what important document I need to bring?",
+        "middle_message": "Ok, I just want to make sure you remember the document. Please don’t print it now, just say Yes if you still remember it.",
+        "middle_answer": "Yes, I remember the document."
+    },
+    {
+        "information": "4 PM",
+        "message_start": "Hi, it's crucial that I remember to pick up my child from school at '4 PM'. Can you remember that for me?",
+        "message_end": "It's almost time to pick up my child. Can you remind me what time I need to be at the school?",
+        "middle_message": "Ok, I just want to make sure you remember the time. Please don’t print it now, just say Yes if you still remember it.",
+        "middle_answer": "Yes, I remember the time."
+    },
+    {
+        "information": "123 Main Street",
+        "message_start": "Hi, I need to remember the address of my new house. It's '123 Main Street'. Can you remember that for me?",
+        "message_end": "I'm filling out a form and need my new address. Can you tell me what it is?",
+        "middle_message": "Ok, I just want to make sure you remember my new address. Please don’t print it now, just say Yes if you still remember it.",
+        "middle_answer": "Yes, I remember your new address."
+    },
+    {
+        "information": "Mrs. Anderson",
+        "message_start": "Hi, it's crucial that I remember my child's teacher's name is 'Mrs. Anderson' for the parent-teacher conference. Can you remember that for me?",
+        "message_end": "I'm about to attend the conference. Can you tell me the teacher's name?",
+        "middle_message": "Ok, I just want to make sure you remember the teacher's name. Please don’t print it now, just say Yes if you still remember it.",
+        "middle_answer": "Yes, I remember the teacher's name."
+    },
+    {
+        "information": "Birthday gift: watch",
+        "message_start": "Hi, I need to remember to buy a 'watch' for my partner's birthday. Can you remember that for me?",
+        "message_end": "I'm shopping for the birthday gift now. Can you remind me what I need to buy?",
+        "middle_message": "Ok, I just want to make sure you remember the birthday gift. Please don’t print it now, just say Yes if you still remember it.",
+        "middle_answer": "Yes, I remember the birthday gift."
+    }
+]
